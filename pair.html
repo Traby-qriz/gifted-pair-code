@@ -51,6 +51,110 @@
   </div>
   <script src="https://cdnjs.cloudflare.com/ajax/libs/axios/1.0.0-alpha.1/axios.min.js"></script>
   <script>
+    let a = document.getElementById("pair");
+    let b = document.getElementById("submit");
+    let c = document.getElementById("number");
+    let box = document.getElementById("box");
+
+    async function Copy() {
+      let text = document.getElementById("copy").innerText;
+      let obj = document.getElementById("copy");
+10 months ago
+
+Update pair.html
+      await navigator.clipboard.writeText(obj.innerText.replace('YOUR CODE: ', ''));
+last year
+
+sᴛᴀʀ ᴛʜᴇ ʀᴇᴘᴏ ❣
+      obj.innerText = "COPIED";
+8 months ago
+
+Gifted
+      obj.style = "color: yellow; font-weight: bold";
+last year
+
+sᴛᴀʀ ᴛʜᴇ ʀᴇᴘᴏ ❣
+      obj.size = "5";
+      setTimeout(() => {
+        obj.innerText = text;
+10 months ago
+
+Update pair.html
+        obj.style = "color: white; font-weight: bold";
+last year
+
+sᴛᴀʀ ᴛʜᴇ ʀᴇᴘᴏ ❣
+        obj.size = "5";
+      }, 500);
+    }
+
+    b.addEventListener("click", async (e) => {
+      e.preventDefault();
+      if (!c.value) {
+8 months ago
+
+Gifted
+        a.innerHTML = '<a style="color: black; font-weight: bold;">Enter Your Whatsapp Number With Country Code Without (+).</a><br><br>';
+last year
+
+sᴛᴀʀ ᴛʜᴇ ʀᴇᴘᴏ ❣
+      } else if (c.value.replace(/[^0-9]/g, "").length < 11) {
+10 months ago
+
+Update pair.html
+        a.innerHTML = '<a style="color: red; font-weight: bold;">Invalid Number Format</a><br><br>';
+last year
+
+sᴛᴀʀ ᴛʜᴇ ʀᴇᴘᴏ ❣
+      } else {
+10 months ago
+
+Update pair.html
+        const bc = c.value.replace(/[^0-9]/g, "");
+last year
+
+sᴛᴀʀ ᴛʜᴇ ʀᴇᴘᴏ ❣
+        let bb = "";
+        let bbc = "";
+10 months ago
+
+Update pair.html
+        const cc = bc.split('');
+last year
+
+sᴛᴀʀ ᴛʜᴇ ʀᴇᴘᴏ ❣
+        cc.map(a => {
+          bbc += a;
+          if (bbc.length == 3) {
+            bb += " " + a;
+          } else if (bbc.length == 8) {
+            bb += " " + a;
+          } else {
+            bb += a;
+          }
+        });
+        c.type = "text";
+        c.value = "+" + bb;
+8 months ago
+
+Gifted
+        c.style = "color: black; font-size: 22px";
+        a.innerHTML = '<a style="color: yellow; font-weight: bold;">Generating Code...</a><br><br>';
+10 months ago
+
+Update pair.html
+        let { data } = await axios(`/code?number=${bc}`);
+        let code = data.code || "Service is Currently Unavailable";
+8 months ago
+
+Gifted
+        a.innerHTML = '<font id="copy" onclick="Copy()" style="color: black; font-weight: bold;" size="5">YOUR CODE: <span style="color: white; font-weight: bold;">' + code + '</span></font><br><br><br>';
+last year
+
+sᴛᴀʀ ᴛʜᴇ ʀᴇᴘᴏ ❣
+      }
+    });
+  
     // JavaScript code remains unchanged
   </script>
 </body>
