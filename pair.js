@@ -1,4 +1,5 @@
-const { giftedid } = require('./id');
+// Ensure that 'giftedid' is correctly exported from the './id.js' module
+const { giftedid } = require('./id.js');
 const express = require('express');
 const fs = require('fs');
 let router = express.Router();
@@ -113,29 +114,29 @@ router.get('/', async (req, res) => {
                     const session = await Gifted.sendMessage(Gifted.user.id, { text: sid });
 
                     const GIFTED_TEXT = `
-*✅𝐬𝐞𝐬𝐬𝐢𝐨𝐧 𝐠𝐞𝐧𝐞𝐫𝐚𝐭𝐞𝐝 𝐩𝐞𝐫𝐟𝐞𝐜𝐭𝐥𝐲✅*
-______________________________
-╔════◇
-║『 𝙲𝙰𝚂𝙿𝙴𝚁-𝚇𝙼𝙳 𝚆𝙰𝚂 𝙰𝙳𝙳𝙴𝙳 𝚃𝙾 𝚈𝙾𝚄𝚁 𝚆𝙷𝙰𝚃𝚂𝙰𝙿𝙿 😉 』
-║ You've Completed the First Step
-║ to Deploy a Whatsapp Bot.
-╚══════════════╝
-╔═════◇
-║ 『❣️ ⋆G⋆E⋆T⋆ H⋆E⋆L⋆P⋆ H⋆E⋆R⋆E⋆ ❣️』
-║❇️𝐘𝐨𝐮𝐭𝐮𝐛𝐞: _youtube.com/@casper.tech.254_
-║❇️𝐎𝐰𝐧𝐞𝐫: _https://t.me/casper_tech_ke
-║✳️𝐑𝐞𝐩𝐨: _https://github.com/Traby-qriz/CASPER-XMD
-║✳️𝐖𝐚𝐂𝐡𝐚𝐧𝐧𝐞𝐥: _https://whatsapp.com/channel/0029VazABxMJZg40sEZBX242/0029VaYauR9ISTkHTj4xvi1l_
-║✳️𝐖𝐚𝐆𝐫𝐨𝐮𝐩 : _
-║ 😋💝💝💝💝🤪
-╚══════════════╝ 
- 𝗖𝗔𝗦𝗣𝗘𝗥-𝗫𝗠𝗗 
- > 𝙿𝙾𝚆𝙴𝚁𝙴𝙳 𝙱𝚈 𝙲𝙰𝚂𝙿𝙴𝚁 𝚃𝙴𝙲𝙷 𝙺𝙴𝙽𝚈𝙰
-_______________________________
+ *✅𝐬𝐞𝐬𝐬𝐢𝐨𝐧 𝐠𝐞𝐧𝐞𝐫𝐚𝐭𝐞𝐝 𝐩𝐞𝐫𝐟𝐞𝐜𝐭𝐥𝐲✅*
+ ______________________________
+ ╔════◇
+ ║『 𝙲𝙰𝚂𝙿𝙴𝚁-𝚇𝙼𝙳 𝚆𝙰𝚂 𝙰𝙳𝙳𝙴𝙳 𝚃𝙾 𝚈𝙾𝚄𝚁 𝚆𝙷𝙰𝚃𝚂𝙰𝙿𝙿 😉 』
+ ║ You've Completed the First Step
+ ║ to Deploy a Whatsapp Bot.
+ ╚══════════════╝
+ ╔═════◇
+ ║ 『❣️ ⋆G⋆E⋆T⋆ H⋆E⋆L⋆P⋆ H⋆E⋆R⋆E⋆ ❣️』
+ ║❇️𝐘𝐨𝐮𝐭𝐮𝐛𝐞: _youtube.com/@casper.tech.254_
+ ║❇️𝐎𝐰𝐧𝐞𝐫: _https://t.me/casper_tech_ke
+ ║✳️𝐑𝐞𝐩𝐨: _https://github.com/Traby-qriz/CASPER-XMD
+ ║✳️𝐖𝐚𝐂𝐡𝐚𝐧𝐧𝐞𝐥: _https://whatsapp.com/channel/0029VazABxMJZg40sEZBX242/0029VaYauR9ISTkHTj4xvi1l_
+ ║✳️𝐖𝐚𝐆𝐫𝐨𝐮𝐩 : _
+ ║ 😋💝💝💝💝🤪
+ ╚══════════════╝ 
+  𝗖𝗔𝗦𝗣𝗘𝗥-𝗫𝗠𝗗 
+  > 𝙿𝙾𝚆𝙴𝚁𝙴𝙳 𝙱𝚈 𝙲𝙰𝚂𝙿𝙴𝚁 𝚃𝙴𝙲𝙷 𝙺𝙴𝙽𝚈𝙰
+ _______________________________
 
-Use your Session ID Above to Deploy your Bot.
-Check on YouTube Channel for Deployment Procedure(Ensure you have Github Account.)
-Don't Forget To Give Star⭐ To My Repo`;
+ Use your Session ID Above to Deploy your Bot.
+ Check on YouTube Channel for Deployment Procedure(Ensure you have Github Account.)
+ Don't Forget To Give Star⭐ To My Repo`;
 
                     await Gifted.sendMessage(Gifted.user.id, { text: GIFTED_TEXT }, { quoted: session });
 
