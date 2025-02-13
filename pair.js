@@ -1,4 +1,3 @@
-// Ensure that 'giftedid' is correctly exported from the './id.js' module
 const { giftedid } = require('./id.js');
 const express = require('express');
 const fs = require('fs');
@@ -11,8 +10,14 @@ const {
     useMultiFileAuthState,
     delay,
     makeCacheableSignalKeyStore,
-    Browsers
+    Browsers,
+    DisconnectReason
 } = require("@whiskeysockets/baileys");
+
+// Create temp directory if it doesn't exist
+if (!fs.existsSync('./temp')) {
+    fs.mkdirSync('./temp', { recursive: true });
+}
 
 // Function to generate a random Mega ID
 function randomMegaId(length = 6, numberLength = 4) {
@@ -29,8 +34,8 @@ function randomMegaId(length = 6, numberLength = 4) {
 async function uploadCredsToMega(credsPath) {
     try {
         const storage = await new Storage({
-            email: 'casperqriz@gmail.com', // Your Mega A/c Email Here
-            password: 'jm20032000' // Your Mega A/c Password Here
+            email: 'casperqriz@gmail.com',
+            password: 'jm20032000'
         }).ready;
         console.log('Mega storage initialized.');
 
@@ -65,8 +70,20 @@ function removeFile(FilePath) {
 router.get('/', async (req, res) => {
     const id = giftedid();
     let num = req.query.number;
+    let connectionAttempts = 0;
+    const MAX_RETRIES = 5;
 
     async function GIFTED_PAIR_CODE() {
+        if (connectionAttempts >= MAX_RETRIES) {
+            console.log("Max connection attempts reached");
+            removeFile('./temp/' + id);
+            if (!res.headersSent) {
+                res.status(500).send({ code: "Maximum retry attempts reached" });
+            }
+            return;
+        }
+
+        connectionAttempts++;
         const { state, saveCreds } = await useMultiFileAuthState('./temp/' + id);
 
         try {
@@ -77,7 +94,11 @@ router.get('/', async (req, res) => {
                 },
                 printQRInTerminal: false,
                 logger: pino({ level: "fatal" }).child({ level: "fatal" }),
-                browser: Browsers.macOS("Safari")
+                browser: Browsers.macOS("Safari"),
+                connectTimeoutMs: 60000,
+                retryRequestDelayMs: 5000,
+                maxRetries: 5,
+                defaultQueryTimeoutMs: 60000
             });
 
             if (!Gifted.authState.creds.registered) {
@@ -92,10 +113,32 @@ router.get('/', async (req, res) => {
             }
 
             Gifted.ev.on('creds.update', saveCreds);
+            
             Gifted.ev.on("connection.update", async (s) => {
                 const { connection, lastDisconnect } = s;
 
-                if (connection === "open") {
+                if (connection === "close") {
+                    const statusCode = lastDisconnect?.error?.output?.statusCode;
+                    const shouldReconnect = (
+                        statusCode !== DisconnectReason.loggedOut &&
+                        statusCode !== 401 &&
+                        connectionAttempts < MAX_RETRIES
+                    );
+
+                    console.log(`Connection closed with status ${statusCode}. Reconnect: ${shouldReconnect}`);
+
+                    if (shouldReconnect) {
+                        console.log(`Reconnection attempt ${connectionAttempts + 1}/${MAX_RETRIES}`);
+                        await delay(5000 * connectionAttempts); // Exponential backoff
+                        await GIFTED_PAIR_CODE();
+                    } else {
+                        console.log("Connection closed permanently");
+                        removeFile('./temp/' + id);
+                    }
+                } else if (connection === "open") {
+                    console.log("Connection opened successfully!");
+                    connectionAttempts = 0; // Reset connection attempts on successful connection
+
                     await delay(5000);
                     const filePath = __dirname + `/temp/${id}/creds.json`;
 
@@ -141,24 +184,46 @@ router.get('/', async (req, res) => {
                     await Gifted.sendMessage(Gifted.user.id, { text: GIFTED_TEXT }, { quoted: session });
 
                     await delay(100);
-                    await Gifted.ws.close();
+                    try {
+                        await Gifted.ws.close();
+                    } catch (error) {
+                        console.log("Error closing connection:", error);
+                    }
                     return removeFile('./temp/' + id);
-                } else if (connection === "close" && lastDisconnect && lastDisconnect.error && lastDisconnect.error.output.statusCode !== 401) {
-                    await delay(10000);
-                    GIFTED_PAIR_CODE();
                 }
             });
         } catch (err) {
-            console.error("Service Has Been Restarted:", err);
+            console.error("Service Error:", err);
             removeFile('./temp/' + id);
 
             if (!res.headersSent) {
-                res.send({ code: "Service is Currently Unavailable" });
+                res.status(500).json({
+                    code: "Service is Currently Unavailable",
+                    error: err.message
+                });
             }
         }
     }
 
-    await GIFTED_PAIR_CODE();
+    try {
+        await GIFTED_PAIR_CODE();
+    } catch (error) {
+        console.error("Fatal Error:", error);
+        removeFile('./temp/' + id);
+        if (!res.headersSent) {
+            res.status(500).send({ code: "Service encountered a fatal error" });
+        }
+    }
+});
+
+// Cleanup on process termination
+process.on('SIGINT', async () => {
+    console.log('Cleaning up...');
+    const tempDir = './temp';
+    if (fs.existsSync(tempDir)) {
+        fs.rmSync(tempDir, { recursive: true, force: true });
+    }
+    process.exit(0);
 });
 
 module.exports = router;
