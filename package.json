@@ -1,5 +1,7 @@
 {
-  "description": "gifted-pair-code",
+  "name": "gifted-pair-code",
+  "version": "1.0.0",
+  "description": "WhatsApp Session Generator with Pairing Code",
   "main": "./gifted.js",
   "type": "commonjs",
   "engines": {
@@ -7,21 +9,27 @@
   },
   "scripts": {
     "start": "pm2 start gifted.js --deep-monitoring --attach --name gifted",
+    "dev": "nodemon gifted.js",
     "stop": "pm2 stop gifted",
-    "restart": "pm2 restart gifted"
+    "restart": "pm2 restart gifted",
+    "clean": "rm -rf temp/*"
   },
   "author": "Gifted Tech",
   "license": "GPL-3.0 license",
   "dependencies": {
     "@whiskeysockets/baileys": "^6.6.7",
     "awesome-phonenumber": "^2.64.0",
-    "body-parser": "^1.20.1",
-    "express": "^4.18.1",
-    "megajs": "^1.1.0",
+    "body-parser": "^1.20.2",
+    "express": "^4.18.2",
+    "megajs": "^1.1.3",
     "path": "^0.12.7",
     "phone": "3.1.30",
-    "pino": "^8.1.0",
-    "pm2": "^5.2.0",
+    "pino": "^8.16.2",
+    "pino-pretty": "^10.2.3",
+    "pm2": "^5.3.1",
     "qrcode": "^1.5.3"
+  },
+  "devDependencies": {
+    "nodemon": "^3.0.2"
   }
 }
