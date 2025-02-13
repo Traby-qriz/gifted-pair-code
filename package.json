@@ -27,9 +27,26 @@
     "pino": "8.21.0",
     "pino-pretty": "10.3.1",
     "pm2": "5.4.3",
-    "qrcode": "1.5.4"
+    "qrcode": "1.5.4",
+    "colorette": "2.0.20",
+    "dateformat": "4.6.3",
+    "fast-copy": "3.0.2",
+    "fast-safe-stringify": "2.1.1",
+    "help-me": "5.0.0",
+    "joycon": "3.1.1",
+    "minimist": "1.2.8",
+    "secure-json-parse": "2.7.0",
+    "brace-expansion": "1.1.11",
+    "has-flag": "3.0.0"
   },
   "devDependencies": {
-    "nodemon": "3.1.9"
+    "nodemon": "3.1.9",
+    "ignore-by-default": "1.0.1",
+    "minimatch": "3.1.2",
+    "pstree.remy": "1.1.8",
+    "simple-update-notifier": "2.0.0",
+    "supports-color": "5.5.0",
+    "touch": "3.1.1",
+    "undefsafe": "2.0.5"
   }
 }
